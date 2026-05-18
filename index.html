@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tugas Parsing JSON - Kotlin</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px; }
+        
+        /* Gaya untuk blok kode Kotlin */
+        pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+        }
+        .keyword { color: #c678dd; }
+        .string { color: #98c379; }
+        .comment { color: #5c6370; font-style: italic; }
+
+        /* Gaya untuk Demo Aplikasi Web */
+        .app-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .product-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            background-color: #ffffff;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        .product-header {
+            background-color: #e3f2fd;
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .product-header:hover { background-color: #bbdefb; }
+        .product-name { font-weight: bold; color: #1565c0; font-size: 1.1em; }
+        .comparison-panel {
+            display: none;
+            padding: 15px;
+            background-color: #f1f8e9;
+            border-top: 1px solid #e0e0e0;
+        }
+        .comparison-list { list-style: none; padding: 0; margin: 0; }
+        .comparison-list li {
+            display: flex; justify-content: space-between;
+            padding: 8px 0; border-bottom: 1px dashed #ccc;
+        }
+        .comparison-list li:last-child { border-bottom: none; }
+        .product-item.expanded .comparison-panel { display: block; }
+    </style>
+</head>
+<body>
+
+    <h1>Tugas Pemrograman: Parsing JSON ke Object</h1>
+    <p><strong>Bahasa:</strong> Kotlin (Implementasi logika ditunjukkan pada source code di bawah).</p>
+
+    <h2>1. Source Code Kotlin (Jawaban Tugas)</h2>
+    <p>Sesuai instruksi, berikut adalah pembuatan <i>Data Class</i> dan logika parsing menggunakan Gson:</p>
+    <pre><code><span class="keyword">import</span> com.google.gson.Gson
+<span class="keyword">import</span> com.google.gson.annotations.SerializedName
+
+<span class="comment">// 1. Data Class Kotlin</span>
+<span class="keyword">data class</span> Product(
+    @SerializedName(<span class="string">"product_id"</span>) <span class="keyword">val</span> productId: String,
+    @SerializedName(<span class="string">"product_name"</span>) <span class="keyword">val</span> productName: String,
+    <span class="keyword">val</span> price: Int,
+    @SerializedName(<span class="string">"is_available"</span>) <span class="keyword">val</span> isAvailable: Boolean
+)
+
+<span class="comment">// 2. Fungsi Main & Looping</span>
+<span class="keyword">fun</span> main() {
+    <span class="keyword">val</span> gson = Gson()
+    <span class="comment">// (Proses konversi string JSON ke List<Product>)</span>
+    
+    productList.forEach { product ->
+        <span class="keyword">if</span> (product.isAvailable) {
+            println(<span class="string">"Produk Tersedia: [${product.productName}] dengan harga Rp [${product.price}]"</span>)
+        }
+    }
+}</code></pre>
+
+    <h2>2. Demo Aplikasi Cek Harga (Interaktif)</h2>
+    <p>Klik pada produk di bawah ini untuk mensimulasikan fitur perbandingan harga dengan <i>e-commerce</i> lain:</p>
+
+    <div class="app-container" id="tempat-hasil">
+        </div>
+
+    <script>
+        // Data JSON sesuai soal
+        const jsonString = `[
+            {"product_id": "P001", "product_name": "Laptop Gaming X", "price": 15000000, "is_available": true},
+            {"product_id": "P002", "product_name": "Mouse Wireless", "price": 250000, "is_available": false},
+            {"product_id": "P003", "product_name": "Keyboard Mechanical", "price": 750000, "is_available": true}
+        ]`;
+
+        // Simulasi API Harga Toko Sebelah
+        const mockExternalPrices = {
+            "P001": { "Shopee": 14950000, "Tokopedia": 15100000, "Lazada": 14900000 },
+            "P003": { "Shopee": 725000, "Tokopedia": 745000, "Lazada": 730000 }
+        };
+
+        const productList = JSON.parse(jsonString);
+        const tempatHasil = document.getElementById("tempat-hasil");
+
+        productList.forEach(product => {
+            if (product.is_available === true) {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product-item';
+                
+                const headerHtml = `
+                    <div class="product-header" onclick="this.parentElement.classList.toggle('expanded')">
+                        <div>
+                            <span class="product-name">🛍️ ${product.product_name}</span>
+                            <span> - Rp ${product.price.toLocaleString('id-ID')}</span>
+                        </div>
+                        <span>▼ Klik Cek Harga</span>
+                    </div>
+                `;
+                
+                let comparisonHtml = `<div class="comparison-panel"><ul class="comparison-list">`;
+                const externalData = mockExternalPrices[product.product_id];
+                
+                if (externalData) {
+                    for (const storeName in externalData) {
+                        comparisonHtml += `
+                            <li>
+                                <strong>${storeName}</strong>
+                                <span style="color: #2e7d32; font-weight:bold;">Rp ${externalData[storeName].toLocaleString('id-ID')}</span>
+                            </li>
+                        `;
+                    }
+                }
+                comparisonHtml += `</ul></div>`;
+                
+                productDiv.innerHTML = headerHtml + comparisonHtml;
+                tempatHasil.appendChild(productDiv);
+            }
+        });
+    </script>
+</body>
+</html>
