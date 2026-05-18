@@ -2,7 +2,6 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 
-// 1. Data Class untuk merepresentasikan objek produk dari JSON
 data class Product(
     @SerializedName("product_id") 
     val productId: String,
@@ -16,9 +15,7 @@ data class Product(
     val isAvailable: Boolean
 )
 
-// 2. Fungsi utama
 fun main() {
-    // String JSON sesuai dengan soal tugas
     val jsonString = """
         [
             {
@@ -42,17 +39,12 @@ fun main() {
         ]
     """.trimIndent()
 
-    // Inisialisasi Gson
     val gson = Gson()
-    
-    // Mengonversi string JSON menjadi List of Product
     val listType = object : TypeToken<List<Product>>() {}.type
     val productList: List<Product> = gson.fromJson(jsonString, listType)
 
-    // Melakukan perulangan dan menyaring produk yang is_available = true
     productList.forEach { product ->
         if (product.isAvailable) {
-            // Mencetak output sesuai format yang diminta di soal
             println("Produk Tersedia: [${product.productName}] dengan harga Rp [${product.price}]")
         }
     }
