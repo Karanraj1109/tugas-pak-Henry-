@@ -4,95 +4,220 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tugas Parsing JSON - Kotlin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
     <style>
+        /* === TEMA & WARNA DASAR === */
+        :root {
+            --primary: #2563eb;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+        }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            max-width: 850px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f8f9fa;
+            line-height: 1.6;
         }
-        h1, h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px; }
+
+        h1, h2 { 
+            color: #0f172a; 
+            font-weight: 600;
+        }
         
-        /* Gaya untuk blok kode Kotlin */
+        .header-title {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        /* === GAYA KODE KOTLIN (Mirip IDE Beneran) === */
         pre {
-            background-color: #282c34;
-            color: #abb2bf;
-            padding: 15px;
-            border-radius: 8px;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 12px;
             overflow-x: auto;
             font-family: 'Courier New', Courier, monospace;
             font-size: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        .keyword { color: #c678dd; }
-        .string { color: #98c379; }
-        .comment { color: #5c6370; font-style: italic; }
+        .keyword { color: #569cd6; font-weight: bold; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; font-style: italic; }
 
-        /* Gaya untuk Demo Aplikasi Web */
+        /* === GAYA APLIKASI WEB (UI MODERN) === */
         .app-container {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            margin-top: 20px;
+            margin-top: 30px;
         }
+
         .product-item {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            background-color: #ffffff;
+            background: var(--card-bg);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #f1f5f9;
             overflow: hidden;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
         }
+        
+        .product-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.1);
+            border-color: #e2e8f0;
+        }
+
         .product-header {
-            background-color: #e3f2fd;
-            padding: 15px;
+            padding: 20px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: linear-gradient(to right, #ffffff, #f8fafc);
         }
-        .product-header:hover { background-color: #bbdefb; }
-        .product-name { font-weight: bold; color: #1565c0; font-size: 1.1em; }
+
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .product-name { 
+            font-weight: 600; 
+            font-size: 1.15em; 
+            color: #0f172a; 
+        }
+        
+        .product-price-tag {
+            color: var(--text-sub);
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .toggle-btn {
+            background-color: #eff6ff;
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .product-header:hover .toggle-btn {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* === PANEL PERBANDINGAN HARGA === */
         .comparison-panel {
             display: none;
-            padding: 15px;
-            background-color: #f1f8e9;
-            border-top: 1px solid #e0e0e0;
+            padding: 0 20px 20px 20px;
+            background-color: #ffffff;
+            border-top: 1px solid #f1f5f9;
         }
-        .comparison-list { list-style: none; padding: 0; margin: 0; }
+
+        /* Animasi buka panel */
+        .product-item.expanded .comparison-panel { 
+            display: block; 
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .comparison-list { 
+            list-style: none; 
+            padding: 0; 
+            margin: 15px 0 0 0; 
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
         .comparison-list li {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 0; border-bottom: 1px dashed #ccc;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            padding: 12px 16px; 
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
         }
-        .comparison-list li:last-child { border-bottom: none; }
-        .product-item.expanded .comparison-panel { display: block; }
-        
-        /* Gaya khusus untuk tombol link marketplace */
+
+        .store-name {
+            font-weight: 600;
+            color: #334155;
+        }
+
+        /* === TOMBOL MARKETPLACE (GRADIENT) === */
         .price-link {
-            display: inline-block;
-            background-color: #ff5722;
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            border-radius: 8px;
             color: white;
-            padding: 6px 12px;
-            border-radius: 4px;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
             font-size: 0.9em;
-            transition: background-color 0.2s;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .price-link.tokopedia { background-color: #03ac0e; }
-        .price-link:hover { opacity: 0.8; }
+        
+        .price-link:hover { 
+            opacity: 0.9; 
+            transform: translateY(-1px); 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .price-link.tokopedia { 
+            background: linear-gradient(135deg, #00aa5b, #00c76a); 
+        }
+        .price-link.shopee { 
+            background: linear-gradient(135deg, #ee4d2d, #ff7337); 
+        }
+
+        /* === RESPONSIVE UNTUK HP (ANDROID/IOS) === */
+        @media (max-width: 600px) {
+            body { padding: 15px; }
+            .product-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .toggle-btn {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+            .comparison-list li {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <h1>Tugas Pemrograman: Parsing JSON ke Object</h1>
-    <p><strong>Bahasa:</strong> Kotlin (Implementasi logika ditunjukkan pada source code di bawah).</p>
+    <div class="header-title">
+        <h1>Tugas Pemrograman</h1>
+        <p>Parsing JSON ke Object (Kotlin & Web Demo)</p>
+    </div>
 
-    <h2>1. Source Code Kotlin (Jawaban Tugas)</h2>
-    <p>Sesuai instruksi, berikut adalah pembuatan <i>Data Class</i> dan logika parsing menggunakan Gson:</p>
+    <h2>1. Source Code Kotlin</h2>
+    <p>Implementasi logika parsing data JSON Array menjadi Object menggunakan library Gson:</p>
     <pre><code><span class="keyword">import</span> com.google.gson.Gson
 <span class="keyword">import</span> com.google.gson.annotations.SerializedName
 
@@ -116,21 +241,19 @@
     }
 }</code></pre>
 
-    <h2>2. Demo Aplikasi Cek Harga (Interaktif)</h2>
-    <p>Klik pada produk di bawah ini untuk melihat harga <i>real-time</i> dan menuju ke halamannya:</p>
+    <h2 style="margin-top: 40px;">2. Demo Aplikasi Cek Harga</h2>
+    <p>Pilih produk di bawah ini untuk mensimulasikan pencarian harga <i>real-time</i> di Marketplace (Responsif untuk Mobile & Desktop):</p>
 
-    <div class="app-container" id="tempat-hasil">
-        </div>
+    <div class="app-container" id="tempat-hasil"></div>
 
     <script>
-        // Data JSON dengan barang asli
+        // DATA DAN LOGIKA SAMA PERSIS SEPERTI SEBELUMNYA
         const jsonString = `[
             {"product_id": "P001", "product_name": "Asus TUF A15 Gaming Laptop", "price": 15500000, "is_available": true},
             {"product_id": "P002", "product_name": "Logitech G304 Wireless Mouse", "price": 450000, "is_available": false},
             {"product_id": "P003", "product_name": "Keychron K2 Mechanical Keyboard", "price": 1200000, "is_available": true}
         ]`;
 
-        // Simulasi API Harga yang sekarang dilengkapi dengan URL tujuan
         const mockExternalPrices = {
             "P001": { 
                 "Shopee": { price: 15350000, url: "https://shopee.co.id/search?keyword=asus%20tuf%20a15" },
@@ -150,13 +273,14 @@
                 const productDiv = document.createElement('div');
                 productDiv.className = 'product-item';
                 
+                // HTML disesuaikan dengan class CSS baru yang lebih elegan
                 const headerHtml = `
                     <div class="product-header" onclick="this.parentElement.classList.toggle('expanded')">
-                        <div>
+                        <div class="product-info">
                             <span class="product-name">💻 ${product.product_name}</span>
-                            <span> - Rp ${product.price.toLocaleString('id-ID')}</span>
+                            <span class="product-price-tag">Rp ${product.price.toLocaleString('id-ID')}</span>
                         </div>
-                        <span>▼ Cek Marketplace</span>
+                        <span class="toggle-btn">Cek Harga ▾</span>
                     </div>
                 `;
                 
@@ -166,14 +290,14 @@
                 if (externalData) {
                     for (const storeName in externalData) {
                         const dataToko = externalData[storeName];
-                        // Menentukan warna tombol berdasarkan nama toko
-                        const classToko = storeName.toLowerCase() === 'tokopedia' ? 'tokopedia' : '';
+                        // Deteksi nama toko untuk warna tombol yang sesuai
+                        const classToko = storeName.toLowerCase() === 'tokopedia' ? 'tokopedia' : 'shopee';
                         
                         comparisonHtml += `
                             <li>
-                                <strong>${storeName}</strong>
+                                <span class="store-name">${storeName}</span>
                                 <a href="${dataToko.url}" target="_blank" class="price-link ${classToko}">
-                                    Beli di sini - Rp ${dataToko.price.toLocaleString('id-ID')} ↗
+                                    Beli Rp ${dataToko.price.toLocaleString('id-ID')} ↗
                                 </a>
                             </li>
                         `;
