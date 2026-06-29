@@ -3,471 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marketplace Hub - Tugas JSON Kotlin (Premium UI)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <title>Login - Catatan Harian</title>
     <style>
-        /* === RESET & VARIABEL UTAMA === */
-        :root {
-            --bg-main: #f1f5f9;
-            --surface: #ffffff;
-            --text-title: #0f172a;
-            --text-body: #334155;
-            --text-muted: #64748b;
-            --shopee-grad: linear-gradient(135deg, #ff5722, #ff7337);
-            --tokped-grad: linear-gradient(135deg, #03ac0e, #10c01b);
-            --accent-blue: #2563eb;
-            --border-color: #e2e8f0;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-            --shadow-md: 0 10px 30px -5px rgba(0, 0, 0, 0.07);
-            --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
-            --radius-card: 24px;
-            --radius-btn: 14px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        /* Mengatur reset dasar dan font */
+        * { 
+            box-sizing: border-box; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
         }
         
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-body);
-            padding: 40px 20px;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* === HEADER === */
-        .header-section {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-        .header-section h1 {
-            color: var(--text-title);
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-            letter-spacing: -1px;
-        }
-        .header-section p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            font-weight: 400;
-        }
-
-        h2 {
-            color: var(--text-title);
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        /* === SOURCE CODE VIEW (KOTLIN) === */
-        .code-block {
-            background-color: #1a1b1e;
-            color: #c1c2c5;
-            padding: 28px;
-            border-radius: var(--radius-card);
-            overflow-x: auto;
-            font-family: 'Fira Code', Consolas, Monaco, monospace;
-            font-size: 14px;
-            box-shadow: var(--shadow-lg);
-            margin-bottom: 55px;
-            border: 1px solid rgba(255,255,255,0.03);
-            position: relative;
-        }
-        .code-block::before {
-            content: "KOTLIN SOURCE";
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            font-size: 10px;
-            font-weight: 700;
-            color: #5c5f66;
-            letter-spacing: 1px;
-        }
-        .keyword { color: #da70d6; font-weight: bold; }
-        .string { color: #98c379; }
-        .comment { color: #5c6370; font-style: italic; }
-
-        /* === MARKETPLACE GRID SYSTEM === */
-        .marketplace-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-        }
-
-        /* === PRODUCT CARD (ELEGAN & MODERN UPGRADE) === */
-        .product-card {
-            background: var(--surface);
-            border-radius: var(--radius-card);
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            position: relative;
+        body { 
+            background-color: #f4f7f6; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
         }
         
-        .product-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-lg);
-            border-color: #d1d5db;
-        }
-
-        /* Container Gambar Produk */
-        .image-container {
-            width: 100%;
-            height: 240px;
-            background-color: #f8fafc;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .product-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
-        }
-
-        .product-card:hover .product-img {
-            transform: scale(1.08);
-        }
-
-        /* Badge Status */
-        .badge-status {
-            position: absolute;
-            top: 16px;
-            left: 16px;
-            background-color: rgba(16, 185, 129, 0.9);
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            backdrop-filter: blur(5px);
-            z-index: 2;
-        }
-
-        /* Detail Isi Card */
-        .card-details {
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 20%);
-            position: relative;
-            margin-top: -20px; /* Overlay sedikit ke gambar */
-            border-radius: 20px 20px 0 0;
-        }
-
-        .prod-name {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--text-title);
-            margin-bottom: 10px;
-            line-height: 1.4;
-            height: 48px; /* Jaga agar card sejajar */
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            letter-spacing: -0.2px;
-        }
-
-        .price-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .prod-price {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: #e53e3e; /* Warna merah harga yang lebih elegan */
+        /* Membentuk container seperti layar HP (Frame) */
+        .mobile-frame { 
+            background-color: white; 
+            width: 100%; 
+            max-width: 375px; /* Ukuran standar layar mobile */
+            padding: 40px 20px; 
+            border-radius: 20px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            text-align: center; 
         }
         
-        .rating-sim {
-            font-size: 12px;
-            color: #f59e0b;
-            font-weight: 600;
+        /* Komponen Image */
+        .logo { 
+            width: 90px; 
+            margin-bottom: 20px; 
         }
-
-        /* Tombol Utama */
-        .action-btn {
-            width: 100%;
-            background-color: #f8fafc;
-            color: var(--accent-blue);
-            border: 1px solid #e2e8f0;
-            padding: 14px;
-            border-radius: var(--radius-btn);
-            font-family: inherit;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin-top: auto;
+        
+        /* Komponen Text - Hierarki Visual */
+        h1 { 
+            font-size: 24px; 
+            font-weight: bold; 
+            color: #333; 
+            margin: 0 0 10px 0; 
         }
-
-        .product-card:hover .action-btn {
-            background-color: var(--accent-blue);
-            color: white;
-            border-color: var(--accent-blue);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        p { 
+            font-size: 14px; 
+            color: #666; 
+            margin-bottom: 30px; 
         }
-
-        /* === DRAWER / EXPAND PANEL BELANJA (PREMIUM ANIMATION) === */
-        .market-drawer {
-            max-height: 0;
-            overflow: hidden;
-            padding: 0 24px;
-            background-color: var(--surface);
-            transition: max-height 0.3s ease-out, padding 0.3s ease-out, border-color 0.3s;
-            border-top: 1px solid transparent;
+        
+        /* Komponen Input */
+        input { 
+            width: 100%; 
+            padding: 15px; 
+            margin-bottom: 15px; 
+            border: 1px solid #ddd; 
+            border-radius: 10px; 
+            font-size: 14px; 
         }
-
-        .product-card.expanded .market-drawer {
-            max-height: 200px; /* Tinggi maksimal yang cukup untuk 2 link */
-            padding: 10px 24px 24px 24px;
-            border-color: #f1f5f9;
+        input:focus { 
+            border-color: #4A90E2; 
+            outline: none; 
         }
-
-        .drawer-title {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-            font-weight: 700;
+        
+        /* Komponen Button */
+        button { 
+            width: 100%; 
+            padding: 15px; 
+            background-color: #4A90E2; /* Nuansa biru untuk konsistensi */
+            color: white; 
+            border: none; 
+            border-radius: 10px; /* Sudut membulat */
+            font-size: 16px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: background 0.3s; 
             margin-top: 10px;
         }
-
-        .links-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        /* Link Marketplace Button */
-        .market-link {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 16px;
-            border-radius: var(--radius-btn);
-            color: white;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.9rem;
-            transition: var(--transition);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        
-        .market-link:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .market-link.shopee { background: var(--shopee-grad); }
-        .market-link.tokopedia { background: var(--tokped-grad); }
-        
-        .price-tag-sm {
-            font-size: 12px;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 3px 10px;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-
-        /* === RESPONSIVE UTK ANDROID / IOS / LAPTOP === */
-        @media (max-width: 768px) {
-            .header-section h1 { font-size: 2rem; }
-            .marketplace-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 20px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            body { padding: 30px 15px; }
-            .header-section h1 { font-size: 1.7rem; }
-            .marketplace-grid {
-                grid-template-columns: 1fr; /* Full width di layar HP kecil agar gambar puas dilihat */
-            }
-            .image-container { height: 210px; }
-            .code-block { padding: 20px; font-size: 12px; }
+        button:hover { 
+            background-color: #357abd; 
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header-section">
-            <h1>Marketplace Hub</h1>
-            <p>Implementasi Parsing Data JSON Array ke Object Terstruktur Kotlin</p>
-        </div>
-
-        <h2>📝 1. Kode Kotlin (Logika Pemrosesan)</h2>
-        <div class="code-block">
-<pre><code><span class="keyword">import</span> com.google.gson.Gson
-<span class="keyword">import</span> com.google.gson.annotations.SerializedName
-
-<span class="comment">// Struktur Data Class Utama</span>
-<span class="keyword">data class</span> Product(
-    @SerializedName(<span class="string">"product_id"</span>) <span class="keyword">val</span> productId: String,
-    @SerializedName(<span class="string">"product_name"</span>) <span class="keyword">val</span> productName: String,
-    <span class="keyword">val</span> price: Int,
-    @SerializedName(<span class="string">"is_available"</span>) <span class="keyword">val</span> isAvailable: Boolean
-)
-
-<span class="keyword">fun</span> main() {
-    <span class="keyword">val</span> gson = Gson()
-    <span class="comment">// Mengurai string JSON Array menjadi daftar objek terstruktur</span>
-    <span class="keyword">val</span> productList: List&lt;Product&gt; = gson.fromJson(jsonString, listType)
-    
-    productList.forEach { product -&gt;
-        <span class="keyword">if</span> (product.isAvailable) {
-            println(<span class="string">"Produk Tersedia: [${product.productName}] dengan harga Rp [${product.price}]"</span>)
-        }
-    }
-}</code></pre>
-        </div>
-
-        <h2>🛍️ 2. Katalog Hasil Parsing JSON (Interaktif)</h2>
-        <div class="marketplace-grid" id="container-katalog">
-            </div>
+    <div class="mobile-frame">
+        <!-- 1. Image -->
+        <img src="https://cdn-icons-png.flaticon.com/512/3233/3233483.png" alt="Logo Aplikasi" class="logo">
+        
+        <!-- 2 & 3. Text (Judul dan Sub-judul) -->
+        <h1>Selamat Datang</h1>
+        <p>Silakan masuk untuk menulis catatanmu</p>
+        
+        <!-- 4. Input Field (Email dan Password) -->
+        <input type="email" id="email" placeholder="Alamat Email">
+        <input type="password" id="password" placeholder="Kata Sandi">
+        
+        <!-- 5. Button -->
+        <button onclick="login()">Masuk</button>
     </div>
 
+    <!-- Interaksi Dasar JavaScript -->
     <script>
-        // DATA JSON UTAMA (TETAP SAMA - TIDAK DIUBAH)
-        const jsonString = `[
-            {"product_id": "P001", "product_name": "Asus TUF A15 Gaming Laptop AMD Ryzen", "price": 15500000, "is_available": true},
-            {"product_id": "P002", "product_name": "Logitech G304 LightSpeed Wireless Mouse", "price": 450000, "is_available": false},
-            {"product_id": "P003", "product_name": "Keychron K2 Mechanical Keyboard RGB", "price": 1200000, "is_available": true},
-            {"product_id": "P004", "product_name": "Skintific 5X Ceramide Barrier Moisture Gel 50g", "price": 139000, "is_available": true},
-            {"product_id": "P005", "product_name": "Samyang Instant Ramen Spicy Buldak Noodles", "price": 23000, "is_available": true},
-            {"product_id": "P006", "product_name": "Yamaha F310 Acoustic Guitar Natural Wood", "price": 1420000, "is_available": true}
-        ]`;
-
-        // === PERBAIKAN BUG GAMBAR SKINTIFIC (P004) DI SINI ===
-        // Aku ganti link P004 dengan gambar Skintific Ceramide yang stabil dan jernih.
-        const productImages = {
-            "P001": "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=500&q=80",
-            "P003": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&q=80",
-            "P004": "https://images.unsplash.com/photo-1612817159949-195b6eb9e31a?w=500&q=80", // FIXED LINK: Gambar Skincare Pot/Jar
-            "P005": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=500&q=80",
-            "P006": "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=500&q=80"
-        };
-
-        // DATA LINK & HARGA MARKETPLACE (TETAP SAMA - TIDAK DIUBAH)
-        const mockExternalPrices = {
-            "P001": { 
-                "Shopee": { price: 15349000, url: "https://shopee.co.id/search?keyword=asus%20tuf%20a15" },
-                "Tokopedia": { price: 15499000, url: "https://www.tokopedia.com/search?q=asus%20tuf%20a15" }
-            },
-            "P003": { 
-                "Shopee": { price: 1145000, url: "https://shopee.co.id/search?keyword=keychron%20k2" },
-                "Tokopedia": { price: 1199000, url: "https://www.tokopedia.com/search?q=keychron%20k2" }
-            },
-            "P004": { 
-                "Shopee": { price: 135000, url: "https://shopee.co.id/search?keyword=skintific%205x%20ceramide" },
-                "Tokopedia": { price: 138000, url: "https://www.tokopedia.com/search?q=skintific%205x%20ceramide" }
-            },
-            "P005": { 
-                "Shopee": { price: 215000, url: "https://shopee.co.id/search?keyword=samyang%20buldak" },
-                "Tokopedia": { price: 22000, url: "https://www.tokopedia.com/search?q=samyang%20buldak" }
-            },
-            "P006": { 
-                "Shopee": { price: 1399000, url: "https://shopee.co.id/search?keyword=yamaha%20f310" },
-                "Tokopedia": { price: 1415000, url: "https://www.tokopedia.com/search?q=yamaha%20f310" }
-            }
-        };
-
-        const productList = JSON.parse(jsonString);
-        const containerKatalog = document.getElementById("container-katalog");
-
-        productList.forEach(product => {
-            // Logika tugas: hanya tampilkan jika status is_available bernilai TRUE
-            if (product.is_available === true) {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                
-                // Gunakan placeholder aman jika ID gambar tidak ditemukan
-                const imgUrl = productImages[product.product_id] || "https://images.unsplash.com/photo-1560343776-97e7d202ff02?w=500";
-
-                // UI Card yang ditingkatkan (lebih elegan)
-                let cardHtml = `
-                    <div class="image-container">
-                        <span class="badge-status">Stock Ready</span>
-                        <img class="product-img" src="${imgUrl}" alt="${product.product_name}" loading="lazy">
-                    </div>
-                    <div class="card-details">
-                        <div class="prod-name">${product.product_name}</div>
-                        <div class="price-row">
-                            <div class="prod-price">Rp ${product.price.toLocaleString('id-ID')}</div>
-                            <div class="rating-sim">★ 4.9</div>
-                        </div>
-                        <button class="action-btn" onclick="toggleDrawer(this)">
-                            <span>Cek Harga Marketplace</span> <span>⚡</span>
-                        </button>
-                    </div>
-                `;
-                
-                // UI Drawer Link Belanja (tetap fungsional dan tanpa bug)
-                let drawerHtml = `<div class="market-drawer"><div class="drawer-title">Beli di Toko Asli:</div><div class="links-wrapper">`;
-                const marketData = mockExternalPrices[product.product_id];
-                
-                if (marketData) {
-                    for (const store in marketData) {
-                        const infoToko = marketData[store];
-                        const classWarna = store.toLowerCase() == 'tokopedia' ? 'tokopedia' : 'shopee';
-                        // target="_blank" agar membuka tab baru tanpa bug
-                        drawerHtml += `
-                            <a href="${infoToko.url}" target="_blank" class="market-link ${classWarna}">
-                                <span>${store}</span>
-                                <span class="price-tag-sm">Rp ${infoToko.price.toLocaleString('id-ID')} ↗</span>
-                            </a>
-                        `;
-                    }
-                }
-                drawerHtml += `</div></div>`;
-                
-                card.innerHTML = cardHtml + drawerHtml;
-                containerKatalog.appendChild(card);
-            }
-        });
-
-        // FUNGSI TOGGLE JALAN TANPA BUG (Membuka panel perbandingan harga dengan animasi CSS baru)
-        function toggleDrawer(buttonElement) {
-            const currentCard = buttonElement.closest('.product-card');
+        function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
             
-            // Opsional: Tutup card lain yang sedang terbuka biar rapi (Accordion effect)
-            /*
-            document.querySelectorAll('.product-card.expanded').forEach(openCard => {
-                if(openCard !== currentCard) openCard.classList.remove('expanded');
-            });
-            */
-            
-            currentCard.classList.toggle('expanded');
+            if(email && password) {
+                alert("Login berhasil! Selamat datang di Catatan Harianmu.");
+            } else {
+                alert("Harap isi email dan kata sandi terlebih dahulu.");
+            }
         }
     </script>
+
 </body>
 </html>
